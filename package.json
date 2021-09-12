@@ -1,0 +1,52 @@
+{
+  "name": "sdcard-cid-decode",
+  "version": "1.0.0",
+  "description": "SD card CID Decoder",
+  "keywords": [
+    "sd",
+    "sdcard",
+    "sd card",
+    "securedigital",
+    "secure digital",
+    "securedigitalcard",
+    "secure digital card",
+    "cid",
+    "card identification",
+    "decode",
+    "decoder",
+    "typescript"
+  ],
+  "author": "Max Kueng (https://maxkueng.com/contact)",
+  "license": "MIT",
+  "homepage": "https://github.com/maxkueng/sdcard-cid-decode",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/maxkueng/sdcard-cid-decode.git"
+  },
+  "bugs": {
+    "url": "https://github.com/maxkueng/sdcard-cid-decode/issues"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "tsc",
+    "lint": "eslint src/*.ts",
+    "lint:fix": "eslint --fix src/*.ts",
+    "prepublish": "npm-run-all -s build"
+  },
+  "devDependencies": {
+    "@types/node": "^16.9.1",
+    "@typescript-eslint/eslint-plugin": "^4.31.0",
+    "@typescript-eslint/parser": "^4.31.0",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.24.2",
+    "npm-run-all": "^4.1.5",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.4.3"
+  }
+}
