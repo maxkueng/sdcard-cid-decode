@@ -2,19 +2,24 @@
 // Note: many SD cards are sold under retail brands that differ from
 // the silicon vendor.
 // Sources:
+//  - https://www.bahjeez.com/sd-card-manufacturer-ids/
 //  - https://www.cameramemoryspeed.com/sd-memory-card-faq/reading-sd-card-cid-serial-psn-internal-numbers/
+//  - https://github.com/torvalds/linux/blob/master/drivers/mmc/core/card.h
 const MANUFACTURERS: Record<string, string> = {
   '0x000001': 'Panasonic',
-  '0x000002': 'Toshiba',
+  '0x000002': 'Kioxia',
   '0x000003': 'SanDisk',
+  '0x000009': 'ATP',
   '0x00001b': 'Samsung',
-  '0x00001d': 'AData',
-  '0x000027': 'Phision',
+  '0x00001d': 'ADATA',
+  '0x000027': 'Phison',
   '0x000028': 'Lexar',
   '0x000031': 'Silicon Power',
   '0x000041': 'Kingston',
   '0x000074': 'Transcend',
   '0x000082': 'Sony',
+  '0x00009c': 'Angelbird',
+  '0x00009f': 'Kingston',
 };
 
 const CID_HEX_LENGTH = 32;
