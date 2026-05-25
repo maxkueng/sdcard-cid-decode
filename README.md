@@ -74,7 +74,7 @@ console.log(info);
 
  - `manufacturerId: string`: Hex representation of the manufacturer ID assigned by SD-3C, LLC.
  - `manufacturerIdDecimal: number`: Decimal representation of the manufacturer ID assigned by SD-3C, LLC
- - `manufacturer: string`: A guessed manufacturer name based on [this list](https://www.cameramemoryspeed.com/sd-memory-card-faq/reading-sd-card-cid-serial-psn-internal-numbers/). If the name is unknown then value will be `"Unknown"`
+ - `manufacturer: string`: A guessed manufacturer name based on [this list](https://www.cameramemoryspeed.com/sd-memory-card-faq/reading-sd-card-cid-serial-psn-internal-numbers/), [this list](https://www.bahjeez.com/sd-card-manufacturer-ids/), and [the Linux kernel](https://github.com/torvalds/linux/blob/master/drivers/mmc/core/card.h). If the name is unknown then value will be `"Unknown"`
  - `oemId: string`: OEM / Application ID assigned by SD-3C, LLC
  - `productName: string`: Product name
  - `productRevision: string`: Product revision
