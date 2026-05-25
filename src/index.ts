@@ -1,3 +1,25 @@
+// MID -> silicon vendor.
+// Note: many SD cards are sold under retail brands that differ from
+// the silicon vendor.
+// Sources:
+//  - https://www.cameramemoryspeed.com/sd-memory-card-faq/reading-sd-card-cid-serial-psn-internal-numbers/
+const MANUFACTURERS: Record<string, string> = {
+  '0x000001': 'Panasonic',
+  '0x000002': 'Toshiba',
+  '0x000003': 'SanDisk',
+  '0x00001b': 'Samsung',
+  '0x00001d': 'AData',
+  '0x000027': 'Phision',
+  '0x000028': 'Lexar',
+  '0x000031': 'Silicon Power',
+  '0x000041': 'Kingston',
+  '0x000074': 'Transcend',
+  '0x000082': 'Sony',
+};
+
+const CID_HEX_LENGTH = 32;
+const HEX_PATTERN = /^[0-9a-fA-F]+$/;
+
 function hex2dec(hex: string): number {
   return Number.parseInt(hex, 16);
 }
@@ -5,26 +27,9 @@ function hex2dec(hex: string): number {
 function hex2ascii(hex: string): string {
   let str = '';
   for (let i = 0; i < hex.length; i += 2) {
-    str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+    str += String.fromCharCode(Number.parseInt(hex.slice(i, i + 2), 16));
   }
   return str;
-}
-
-// https://www.cameramemoryspeed.com/sd-memory-card-faq/reading-sd-card-cid-serial-psn-internal-numbers/
-function getManufacturerName(mid: string): string {
-  return {
-    '0x000001': 'Panasonic',
-    '0x000002': 'Toshiba',
-    '0x000003': 'SanDisk',
-    '0x00001b': 'Samsung',
-    '0x00001d': 'AData',
-    '0x000027': 'Phision',
-    '0x000028': 'Lexar',
-    '0x000031': 'Silicon Power',
-    '0x000041': 'Kingston',
-    '0x000074': 'Transcend',
-    '0x000082': 'Sony',
-  }[mid] || 'Unknown';
 }
 
 export type CardIdentification = {
@@ -40,18 +45,29 @@ export type CardIdentification = {
 };
 
 export default function decodeCID(cid: string): CardIdentification {
-  const mid = cid.slice(0, 2);
+  if (typeof cid !== 'string') {
+    throw new TypeError('CID must be a string');
+  }
+  const trimmed = cid.trim();
+  if (trimmed.length !== CID_HEX_LENGTH) {
+    throw new RangeError(`CID must be ${CID_HEX_LENGTH} hex characters, got ${trimmed.length}`);
+  }
+  if (!HEX_PATTERN.test(trimmed)) {
+    throw new TypeError('CID must contain only hexadecimal characters');
+  }
+
+  const mid = trimmed.slice(0, 2);
   const manufacturerId = `0x${mid.padStart(6, '0')}`;
   const manufacturerIdDecimal = hex2dec(mid);
-  const manufacturer = getManufacturerName(manufacturerId);
-  const oemId = hex2ascii(cid.slice(2, 6));
-  const productName = hex2ascii(cid.slice(6, 16));
-  const productRevision = `${hex2dec(cid[16])}.${hex2dec(cid[17])}`;
-  const serialNumber = hex2dec(cid.slice(18, 26));
-  const manufactureYear = hex2dec(cid.slice(27, 29)) + 2000;
-  const manufactureMonth = hex2dec(cid[29]);
+  const manufacturer = MANUFACTURERS[manufacturerId] ?? 'Unknown';
+  const oemId = hex2ascii(trimmed.slice(2, 6));
+  const productName = hex2ascii(trimmed.slice(6, 16));
+  const productRevision = `${hex2dec(trimmed[16])}.${hex2dec(trimmed[17])}`;
+  const serialNumber = hex2dec(trimmed.slice(18, 26));
+  const manufactureYear = hex2dec(trimmed.slice(27, 29)) + 2000;
+  const manufactureMonth = hex2dec(trimmed[29]);
   const manufactureDate = `${String(manufactureMonth).padStart(2, '0')}/${manufactureYear}`;
-  const crc7Checksum = hex2dec(cid.slice(30, 32));
+  const crc7Checksum = hex2dec(trimmed.slice(30, 32)) >> 1;
 
   return {
     manufacturerId,

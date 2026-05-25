@@ -21,32 +21,58 @@
   "homepage": "https://github.com/maxkueng/sdcard-cid-decode",
   "repository": {
     "type": "git",
-    "url": "git://github.com/maxkueng/sdcard-cid-decode.git"
+    "url": "git+https://github.com/maxkueng/sdcard-cid-decode.git"
   },
   "bugs": {
     "url": "https://github.com/maxkueng/sdcard-cid-decode/issues"
   },
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "sideEffects": false,
   "files": [
-    "dist"
+    "dist",
+    "!dist/**/*.map"
   ],
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
-    "clean": "rimraf dist",
-    "build": "tsc",
-    "lint": "eslint src/*.ts",
-    "lint:fix": "eslint --fix src/*.ts",
-    "prepublish": "npm-run-all -s build"
+    "clean": "node -e \"import('node:fs/promises').then(f => f.rm('dist', { recursive: true, force: true }))\"",
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check src",
+    "lint:fix": "biome check --write src",
+    "format": "biome format --write src",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "prepublishOnly": "npm run clean && npm run lint && npm run typecheck && npm run test && npm run build"
   },
   "devDependencies": {
-    "@types/node": "^16.9.1",
-    "@typescript-eslint/eslint-plugin": "^4.31.0",
-    "@typescript-eslint/parser": "^4.31.0",
-    "eslint": "^7.32.0",
-    "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-plugin-import": "^2.24.2",
-    "npm-run-all": "^4.1.5",
-    "rimraf": "^3.0.2",
-    "typescript": "^4.4.3"
+    "@biomejs/biome": "^2.4.15",
+    "@types/node": "^22.10.2",
+    "@vitest/coverage-v8": "^4.1.7",
+    "tsup": "^8.5.1",
+    "typescript": "^5.7.2",
+    "vitest": "^4.1.7"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
   }
 }

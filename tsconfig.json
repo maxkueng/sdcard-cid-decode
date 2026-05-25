@@ -1,20 +1,23 @@
 {
   "compilerOptions": {
-    "moduleResolution": "node",
-    "target": "es5",
-    "module": "commonjs",
-    "esModuleInterop": true,
-    "sourceMap": true,
-    "lib": [
-      "dom",
-      "es2018"
-    ],
-    "declaration": true,
-    "outDir": "./dist",
+    "target": "es2022",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "lib": ["es2022"],
     "strict": true,
-    "typeRoots": [
-      "node_modules/@types"
-    ]
+    "noUncheckedIndexedAccess": false,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "declaration": true,
+    "sourceMap": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": false,
+    "rootDir": "./src",
+    "outDir": "./dist"
   },
-  "include": ["./src"]
+  "include": ["./src"],
+  "exclude": ["**/*.test.ts"]
 }

@@ -7,6 +7,14 @@ sdcard-cid-decode
 
 This module will extract the information in the CID of an SD card. The CID can typically be found in `/sys/block/mmcblk0/device/cid`.
 
+## Breaking changes in 2.0.0
+
+- **CommonJS default export**: `require('sdcard-cid-decode')` now returns the function directly. Previously it returned `{ default: fn }` and consumers had to write `require('sdcard-cid-decode').default`. ESM `import decodeCID from 'sdcard-cid-decode'` is unchanged.
+- **CRC7 checksum value**: `crc7Checksum` now returns the 7-bit CRC value as defined by the SD specification (the trailing byte right-shifted by 1 to drop the stop bit). Previous versions returned the raw trailing byte including the stop bit. If you compared this value against externally-computed CRC7s, you were comparing the wrong number; the new value is correct.
+- **Input validation**: `decodeCID()` now throws `TypeError` for non-string or non-hex input and `RangeError` for inputs that are not 32 hex characters. Previously it silently produced garbage.
+- **Manufacturer name fixes**: `0x000027` is now spelled `Phison` (was `Phision`), `0x000002` is now `Kioxia` (was `Toshiba`, rebranded in 2019), `0x00001d` is now `ADATA` (was `AData`).
+- **Node 18+** required.
+
 ## Installation
 
 ```sh
@@ -15,8 +23,10 @@ npm install --save sdcard-cid-decode
 
 ## Example
 
+ESM:
+
 ```js
-import fs from 'fs';
+import fs from 'node:fs';
 import decodeCID from 'sdcard-cid-decode';
 
 const cid = fs.readFileSync('/sys/block/mmcblk0/device/cid', 'utf8');
@@ -36,21 +46,25 @@ console.log(info);
 //   crc7Checksum: 0
 // }
 ```
+
+CommonJS:
+
 ```js
-const cid = '27504853443332473001b44eed00f221';
-const info = decodeCID(cid);
+const decodeCID = require('sdcard-cid-decode');
+
+const info = decodeCID('27504853443332473001b44eed00f221');
 console.log(info);
 
 // {
 //   manufacturerId: '0x000027',
 //   manufacturerIdDecimal: 39,
-//   manufacturer: 'Phision',
+//   manufacturer: 'Phison',
 //   oemId: 'PH',
 //   productName: 'SD32G',
 //   productRevision: '3.0',
 //   serialNumber: 28593901,
 //   manufactureDate: '02/2015',
-//   crc7Checksum: 33
+//   crc7Checksum: 16
 // }
 ```
 
@@ -74,6 +88,6 @@ Decodes a CID and returns all the information.
 
 ## License
 
-Copyright (c) 2021 Max Kueng
+Copyright (c) 2021-2026 Max Kueng
 
 MIT License

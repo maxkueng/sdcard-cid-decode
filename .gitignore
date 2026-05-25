@@ -1,4 +1,5 @@
 dist
-.nyc_output
 coverage
 node_modules
+*.tsbuildinfo
+.DS_Store
